@@ -4,12 +4,15 @@ on:
   pull_request:
     types: [closed]
 
+permissions:
+  contents: write
+
 jobs:
   delete_branch:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.merged == true }}
     steps:
-      - name: Delete branch
+      - name: Debugging branch deletion
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -17,11 +20,32 @@ jobs:
           REPO=${{ github.repository }}
           DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$REPO | jq -r .default_branch)
 
-          if [ "$BRANCH" != "$DEFAULT_BRANCH" ]; then
-            echo "Deleting branch $BRANCH"
-            curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
-              https://api.github.com/repos/$REPO/git/refs/heads/$BRANCH
-          else
-            echo "Cannot delete the default branch ($BRANCH)"
+          echo "Pull request merged. Checking branch for deletion..."
+          echo "Branch to delete: $BRANCH"
+          echo "Default branch: $DEFAULT_BRANCH"
+
+          if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then
+            echo "Branch is the default branch ($BRANCH). Skipping deletion."
+            exit 0
           fi
+
+          echo "Attempting to delete branch: $BRANCH"
+
+          # API request to delete the branch
+          RESPONSE=$(curl -s -o response.json -w "%{http_code}" -X DELETE \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            https://api.github.com/repos/$REPO/git/refs/heads/$BRANCH)
+
+          echo "API Response Code: $RESPONSE"
+          cat response.json
+
+          if [ "$RESPONSE" -ne 204 ]; then
+            echo "Branch deletion failed. Investigating..."
+            echo "Full response:"
+            cat response.json
+            echo "Exiting with failure."
+            exit 1
+          fi
+
+          echo "Branch $BRANCH deleted successfully."
 
