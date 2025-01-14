@@ -1,0 +1,13 @@
+[18:30:46] [semantic-release] › ℹ  Running semantic-release version 24.2.1
+[18:30:46] [semantic-release] › ✔  Loaded plugin "verifyConditions" from "@semantic-release/npm"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "verifyConditions" from "@semantic-release/github"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "analyzeCommits" from "@semantic-release/commit-analyzer"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "generateNotes" from "@semantic-release/release-notes-generator"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "prepare" from "@semantic-release/npm"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "publish" from "@semantic-release/npm"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "publish" from "@semantic-release/github"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "addChannel" from "@semantic-release/npm"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "addChannel" from "@semantic-release/github"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "success" from "@semantic-release/github"
+[18:30:46] [semantic-release] › ✔  Loaded plugin "fail" from "@semantic-release/github"
+[18:30:52] [semantic-release] › ℹ  This test run was triggered on the branch testtag, while semantic-release is configured to only publish from main, therefore a new version won’t be published.
