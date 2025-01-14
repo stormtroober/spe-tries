@@ -4,7 +4,6 @@
     "config:recommended"
   ],
   "baseBranches": ["develop"],
-  "schedule": ["before 5am on monday"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
