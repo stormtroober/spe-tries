@@ -2,5 +2,26 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
-  ]
+  ],
+  "baseBranches": ["develop"],
+  "schedule": ["before 5am on monday"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchPackageNames": [
+        "semantic-release",
+        "@commitlint/cli",
+        "husky",
+        "semantic-release-preconfigured-conventional-commits"
+      ],
+      "automerge": false
+    }
+  ],
+  "dependencyDashboard": true,
+  "labels": ["dependencies"],
+  "prCreation": "immediate",
+  "prConcurrentLimit": 5
 }
