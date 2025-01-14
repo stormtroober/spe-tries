@@ -3,7 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": ["develop"],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch"],
