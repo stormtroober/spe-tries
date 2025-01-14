@@ -3,5 +3,24 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": ["develop"]
+  "baseBranches": ["develop"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchPackageNames": [
+        "semantic-release",
+        "@commitlint/cli",
+        "husky",
+        "semantic-release-preconfigured-conventional-commits"
+      ],
+      "automerge": false
+    }
+  ],
+  "dependencyDashboard": true,
+  "labels": ["dependencies"],
+  "prCreation": "immediate",
+  "prConcurrentLimit": 5
 }
