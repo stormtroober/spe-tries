@@ -11,7 +11,9 @@ node {
     version.set("20.11.1")
     download.set(true)
     npmVersion.set("10.2.4")
-    
+
+    nodeProjectDir.set(file("${project.projectDir}/src/web"))
+
 }
 
 buildscript {
@@ -88,6 +90,12 @@ tasks.register("devEnvironment") {
 tasks.named("run") {
     // Ensure Kotlin runs in parallel with npm
     mustRunAfter("npmDev")
+}
+
+tasks.register("printVersion") {
+    doLast {
+        println("Project version: ${project.version}")
+    }
 }
 
 
