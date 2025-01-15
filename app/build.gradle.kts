@@ -35,7 +35,6 @@ node {
     nodeProjectDir.set(file(project.projectDir))
 }
 
-// A convenience task that wraps `npm install`
 tasks.register<com.github.gradle.node.npm.task.NpmTask>("installDependencies") {
     // The command is "npm install"
     args.set(listOf("install"))

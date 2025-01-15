@@ -19,7 +19,7 @@ const mongoURI = process.env.MONGO_URI || 'mongodb://mongodb:27017/dbsa';
 mongoose.set('strictQuery', false); // Optional: Adjust based on Mongoose version
 mongoose
   .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('✅ MongoDB Connected'))
+  .then(() => console.log('✅ MongoDB Connected!'))
   .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
 // Use routes
