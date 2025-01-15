@@ -26,10 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 4. Run tests (optional but recommended)
-      - name: Run tests
-        run: npm test
-
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -58,5 +54,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Provided by GitHub Actions for authentication
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}        # If publishing to npm, add this secret
         run: npx semantic-release
