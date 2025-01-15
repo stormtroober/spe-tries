@@ -1,6 +1,13 @@
+
 plugins {
     // Apply the Node.js plugin
     id("com.github.node-gradle.node") version "7.1.0"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
 }
 
 node {
@@ -33,4 +40,10 @@ tasks.register<com.github.gradle.node.npm.task.NpmTask>("runDev") {
 tasks.register<com.github.gradle.node.npm.task.NpmTask>("startApp") {
     dependsOn("installDependencies")
     args.set(listOf("start"))
+}
+
+tasks.register("printVersion") {
+    doLast {
+        println("Project version: ${project.version}")
+    }
 }
