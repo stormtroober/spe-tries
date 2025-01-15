@@ -50,6 +50,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Display Node.js Version
+        run: node -v
+
+      - name: Display npm Version
+        run: npm -v
+      
       # 4. Release the project using semantic-release
       - name: Release
         env:
