@@ -6,7 +6,7 @@ exports.needleman_wunsch = function (s1, s2) {
     // Initialize scoring matrix
     const arr = Array(s2.length + 1)
       .fill()
-      .map(() => Array(s1.length + 1).fill(0));
+      .map(() => Array(s1.length + 1).fill(0) );
   
     for (let i = 1; i <= s2.length; i++) {
       arr[i][0] = gp * i;
