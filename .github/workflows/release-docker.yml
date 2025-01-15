@@ -32,12 +32,11 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/stormtroober/spe-tries:latest
-            ghcr.io/fight-fire-with-scala/vue-frontend:${{ github.event.release.tag_name }}
+            ghcr.io/stormtroober/spe-tries:${{ github.event.release.tag_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
 
       # 5. (Optional) Verify Docker Image
       - name: Verify Docker Image
-        run: docker pull ghcr.io/fight-fire-with-scala/vue-frontend:${{ github.event.release.tag_name }}
+        run: docker pull ghcr.io/stormtroober/spe-tries:${{ github.event.release.tag_name }}
