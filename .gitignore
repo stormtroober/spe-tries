@@ -1,3 +1,7 @@
+.gradle
+build
+gradle/wrapper/gradle-wrapper.jar
+
 # Node modules
 
 app/src/web/node_modules/
