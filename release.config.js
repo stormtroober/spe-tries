@@ -1,6 +1,6 @@
 var config = require('semantic-release-preconfigured-conventional-commits');
-config.plugins.push(
 
+config.plugins.push(
     "@semantic-release/git",
     "@semantic-release/github",
     [
@@ -22,5 +22,4 @@ config.plugins.push(
 // - @semantic-release/changelog
 
 module.exports = config;
-
 
