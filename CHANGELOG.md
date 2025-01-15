@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/stormtroober/spe-tries/compare/1.0.0...1.0.1) (2025-01-15)
+
+### Bug Fixes
+
+* fixed build.gradle ([f66ead7](https://github.com/stormtroober/spe-tries/commit/f66ead7b0a4649978cf60dc85550ed903395acb4))
+
 ## [1.0.0](https://github.com/stormtroober/spe-tries/compare/0.4.0...1.0.0) (2025-01-15)
 
 ### ⚠ BREAKING CHANGES
