@@ -1,3 +1,9 @@
+## [0.3.0](https://github.com/stormtroober/spe-tries/compare/0.2.0...0.3.0) (2025-01-15)
+
+### Features
+
+* add vue project with dockerfile ([ea8f1ef](https://github.com/stormtroober/spe-tries/commit/ea8f1ef3612f829ae196df3b6491a5d237b9cf0f))
+
 ## [0.2.0](https://github.com/stormtroober/spe-tries/compare/0.1.0...0.2.0) (2025-01-15)
 
 ### Features
