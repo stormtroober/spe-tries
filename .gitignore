@@ -1,6 +1,9 @@
 # Node modules
 
 app/src/web/node_modules/
+app/.gradle
+app/build
+app/node_modules/
 node_modules/
 
 # Dependency directories
