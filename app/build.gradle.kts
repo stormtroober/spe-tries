@@ -1,6 +1,7 @@
 import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCommit
 
 plugins {
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
     // Apply the Node.js plugin
     id("com.github.node-gradle.node") version "7.1.0"
 }
@@ -13,6 +14,11 @@ buildscript {
         // Add the plugin to the classpath
         classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.0")
     }
+}
+
+gitSemVer {
+    maxVersionLength.set(20)
+    commitNameBasedUpdateStrategy(ConventionalCommit::semanticVersionUpdate)
 }
 
 node {
