@@ -1,3 +1,4 @@
+import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCommit
 
 plugins {
     // Apply the Node.js plugin
@@ -7,6 +8,10 @@ plugins {
 buildscript {
     repositories {
         mavenCentral()
+    }
+    dependencies {
+        // Add the plugin to the classpath
+        classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.0")
     }
 }
 
