@@ -15,24 +15,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
+      # - name: Set up JDK
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     distribution: 'temurin'
+      #     java-version: '21'
 
-      - name: Build and Publish
-        run: |
-          ./gradlew clean build publish
+      # - name: Build and Publish
+      #   run: |
+      #     ./gradlew clean build publish
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'npm'
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 'lts/*'
+      #     cache: 'npm'
 
-      - name: Install dependencies
-        run: HUSKY=0 npm ci
+      # - name: Install dependencies
+      #   run: HUSKY=0 npm ci
 
       - name: Release
         env:
