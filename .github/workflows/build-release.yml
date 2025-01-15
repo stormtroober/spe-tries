@@ -12,42 +12,24 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      packages: write
-      issues: write
-      pull-requests: write
-      id-token: write
-    concurrency:
-      group: release-${{ github.event.number || github.ref }}
-    outputs:
-      release_created: ${{ steps.check-release.outputs.release_created }}
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
-      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          cache: npm
-          node-version: lts/*
-      
+          node-version: "22.13"
       - name: Install dependencies
-        run: HUSKY=0 npm clean-install
-      
-      - name: Verify dependencies
+        run: npm clean-install
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
-      
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npx semantic-release > semantic_release_output.txt || false
-          cat semantic_release_output.txt
-      
-      - name: Check release status
-        id: check-release
-        run: 'echo "release_created=$(grep -q "no new version is released" semantic_release_output.txt && echo false || echo true)" >> $GITHUB_OUTPUT'
-        shell: bash
+        run: npx semantic-release
