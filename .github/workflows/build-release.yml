@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'  # Uses the latest LTS version of Node.js
+          node-version: '22.13'  # Uses the latest LTS version of Node.js
           cache: 'npm'           # Caches npm dependencies to speed up builds
 
       # 3. Install project dependencies
@@ -43,7 +43,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'  # Uses the latest LTS version of Node.js
+          node-version: '22.13'  # Uses the latest LTS version of Node.js
           cache: 'npm'           # Caches npm dependencies to speed up builds
 
       # 3. Install project dependencies
