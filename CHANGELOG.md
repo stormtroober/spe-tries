@@ -1,3 +1,13 @@
+## [1.1.0](https://github.com/stormtroober/spe-tries/compare/1.0.1...1.1.0) (2025-01-15)
+
+### Features
+
+* add bot token ([dc4ffcf](https://github.com/stormtroober/spe-tries/commit/dc4ffcfd12f48d33059f21c4dc8e47f17d7f079e))
+
+### Build and continuous integration
+
+* modify ci ([10c9df7](https://github.com/stormtroober/spe-tries/commit/10c9df7de042868b5c7341041b78d54cda90c213))
+
 ## [1.0.1](https://github.com/stormtroober/spe-tries/compare/1.0.0...1.0.1) (2025-01-15)
 
 ### Bug Fixes
