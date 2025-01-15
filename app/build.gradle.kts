@@ -22,7 +22,7 @@ buildscript {
     }
     dependencies {
         // Add the plugin to the classpath
-        classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.0")
+        classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.15")
     }
 }
 
