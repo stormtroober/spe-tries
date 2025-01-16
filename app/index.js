@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const routes = require('./src/routes/routes');
 
 // Create Express app
-const app = express();
+const app2 = express();
 
 // Middleware
 app.use(cors()); // Enable CORS for all origins
