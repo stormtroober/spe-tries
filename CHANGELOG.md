@@ -1,3 +1,13 @@
+## [3.0.0](https://github.com/stormtroober/spe-tries/compare/2.0.0...3.0.0) (2025-01-16)
+
+### ⚠ BREAKING CHANGES
+
+* new release
+
+### Features
+
+* new release ([b66aa5e](https://github.com/stormtroober/spe-tries/commit/b66aa5e8c9299003503f10e240d4832f467cd02d))
+
 ## [2.0.0](https://github.com/stormtroober/spe-tries/compare/1.1.0...2.0.0) (2025-01-16)
 
 ### ⚠ BREAKING CHANGES
