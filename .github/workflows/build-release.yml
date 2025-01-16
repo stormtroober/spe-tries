@@ -30,6 +30,8 @@ jobs:
 
       - name: Create a new branch
         run: |
+          git config --global user.email "eugenioandruccioli@gmail.com"
+          git config --global user.name "CryptoMonitor-CI"
           git checkout -b test-branch-${{ github.run_id }}
           echo "Dummy change" >> dummy.txt
           git add dummy.txt
