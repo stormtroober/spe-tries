@@ -1,93 +1,36 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: read # for checkout
+  workflow_dispatch:
+  # or schedule / push triggers, as you prefer
+  # schedule:
+  #   - cron: '0 0 * * *'
 
 jobs:
   release:
-    name: Release
-    runs-on: ubuntu-latest
+    # Make sure the BOT can push tags to main
+    # (and commits if that is required by your semantic-release config)
     permissions:
-      contents: write # to push commits and create PRs
-      issues: write # to comment on released issues
-      pull-requests: write # to create PRs
-      id-token: write # for OIDC if needed
+      contents: write
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Main Branch
+      - name: Check out with BOT credentials
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          # Use your BOT token so you can push to main
+          token: ${{ secrets.BOT_TOKEN }}
 
-      - name: Setup Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22.13"
+          node-version: '22.13'
 
-      - name: Install Dependencies
-        run: HUSKY=0 npm clean-install
+      - name: Install
+        run: npm ci
 
-      - name: Verify Integrity of Dependencies
-        run: npm audit signatures
-
-      - name: Create Release Branch
-        id: create_release_branch
-        run: |
-          # Fetch all tags to ensure accurate versioning
-          git fetch --tags
-
-          # Run semantic-release in dry-run mode to determine the next version
-          NEXT_VERSION=$(npx semantic-release --dry-run | grep "The next release version is" | awk '{print $6}')
-
-          if [ -z "$NEXT_VERSION" ]; then
-            echo "No release needed."
-            exit 0
-          fi
-
-          # Define the release branch name
-          RELEASE_BRANCH="release/v$NEXT_VERSION"
-
-          # Create and checkout the release branch
-          git checkout -b "$RELEASE_BRANCH"
-
-          echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> $GITHUB_ENV
-
-      - name: Run Semantic Release on Release Branch
-        if: success() && env.RELEASE_BRANCH != ''
+      - name: Run semantic-release
         env:
+          # Provide the BOT token to semantic-release
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-        run: |
-          # Ensure you're on the release branch
-          git checkout "$RELEASE_BRANCH"
-
-          # Run semantic-release normally to perform the release
-          npx semantic-release
-
-      - name: Push Release Branch
-        if: success() && env.RELEASE_BRANCH != ''
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.BOT_TOKEN }}
-          branch: ${{ env.RELEASE_BRANCH }}
-          force: false
-
-      # - name: Create Pull Request to Main
-      #   if: success() && env.RELEASE_BRANCH != ''
-      #   uses: peter-evans/create-pull-request@v5
-      #   with:
-      #     token: ${{ secrets.BOT_TOKEN }}
-      #     head: ${{ env.RELEASE_BRANCH }} # Source branch
-      #     base: main # Target branch
-      #     title: "Release v${{ env.RELEASE_BRANCH#release/v }}"
-      #     body: |
-      #       Automated release of version ${{ env.RELEASE_BRANCH#release/v }}.
-
-      #       - [x] Bumped version to ${{ env.RELEASE_BRANCH#release/v }}
-      #       - [x] Updated changelog
-      #       - [x] Ran semantic-release
-      #     labels: release
-      #     commit-message: "chore(release): ${{ env.RELEASE_BRANCH#release/v }}"
+          # If you need NPM_TOKEN or anything else, specify here
+        run: npx semantic-release
