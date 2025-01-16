@@ -28,9 +28,15 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Run semantic-release
+      - name: Create a new branch
+        run: |
+          git checkout -b test-branch-${{ github.run_id }}
+          echo "Dummy change" >> dummy.txt
+          git add dummy.txt
+          git commit -m "Test commit for branch test-branch-${{ github.run_id }}"
+          git push origin test-branch-${{ github.run_id }}
         env:
-          # Provide the BOT token to semantic-release
+          # Use BOT token for authentication
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-          # If you need NPM_TOKEN or anything else, specify here
-        run: HUSKY=0 npx semantic-release
+
+
