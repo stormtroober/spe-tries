@@ -1,9 +1,9 @@
 import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCommit
 
 plugins {
+    id("com.github.node-gradle.node") version "7.1.0"
     id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
     // Apply the Node.js plugin
-    id("com.github.node-gradle.node") version "7.1.0"
 }
 
 buildscript {
