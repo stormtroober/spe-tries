@@ -75,19 +75,19 @@ jobs:
           branch: ${{ env.RELEASE_BRANCH }}
           force: false
 
-      - name: Create Pull Request to Main
-        if: success() && env.RELEASE_BRANCH != ''
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.BOT_TOKEN }}
-          head: ${{ env.RELEASE_BRANCH }} # Source branch
-          base: main # Target branch
-          title: "Release v${{ env.RELEASE_BRANCH#release/v }}"
-          body: |
-            Automated release of version ${{ env.RELEASE_BRANCH#release/v }}.
+      # - name: Create Pull Request to Main
+      #   if: success() && env.RELEASE_BRANCH != ''
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.BOT_TOKEN }}
+      #     head: ${{ env.RELEASE_BRANCH }} # Source branch
+      #     base: main # Target branch
+      #     title: "Release v${{ env.RELEASE_BRANCH#release/v }}"
+      #     body: |
+      #       Automated release of version ${{ env.RELEASE_BRANCH#release/v }}.
 
-            - [x] Bumped version to ${{ env.RELEASE_BRANCH#release/v }}
-            - [x] Updated changelog
-            - [x] Ran semantic-release
-          labels: release
-          commit-message: "chore(release): ${{ env.RELEASE_BRANCH#release/v }}"
+      #       - [x] Bumped version to ${{ env.RELEASE_BRANCH#release/v }}
+      #       - [x] Updated changelog
+      #       - [x] Ran semantic-release
+      #     labels: release
+      #     commit-message: "chore(release): ${{ env.RELEASE_BRANCH#release/v }}"
