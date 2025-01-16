@@ -1,3 +1,17 @@
+## [2.0.0](https://github.com/stormtroober/spe-tries/compare/1.1.0...2.0.0) (2025-01-16)
+
+### ⚠ BREAKING CHANGES
+
+* new release triggger
+
+### Features
+
+* new release triggger ([94b03ef](https://github.com/stormtroober/spe-tries/commit/94b03ef66946392dd3f9d3bcdbfaf337f9be6f75))
+
+### General maintenance
+
+* main ([d001ab4](https://github.com/stormtroober/spe-tries/commit/d001ab4df6795656f2fa3730aa7918d400044f1c))
+
 ## [1.1.0](https://github.com/stormtroober/spe-tries/compare/1.0.1...1.1.0) (2025-01-15)
 
 ### Features
