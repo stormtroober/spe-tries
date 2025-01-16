@@ -58,25 +58,3 @@ jobs:
           
           # Push the new branch to the repository using BOT_TOKEN
           git push origin "release/v$VERSION"
-
-      - name: Create Pull Request to Main
-        if: success() && env.VERSION_TAG != ''
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.BOT_TOKEN }}
-          head: "release/v${{ env.VERSION_TAG#v }}" # Source branch
-          base: main # Target branch
-          title: "Release v${{ env.VERSION_TAG#v }}"
-          body: |
-            Automated release of version ${{ env.VERSION_TAG#v }}.
-
-            - [x] Bumped version to ${{ env.VERSION_TAG#v }}
-            - [x] Updated changelog
-            - [x] Ran semantic-release
-          labels: release
-
-      - name: Clean Up Local Branch (Optional)
-        if: success() && env.VERSION_TAG != ''
-        run: |
-          git checkout main
-          git branch -D "release/v${VERSION}"
