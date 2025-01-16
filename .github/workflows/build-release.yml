@@ -33,4 +33,4 @@ jobs:
           # Provide the BOT token to semantic-release
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
           # If you need NPM_TOKEN or anything else, specify here
-        run: npx semantic-release
+        run: HUSKY=0 npx semantic-release
