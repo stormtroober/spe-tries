@@ -2,7 +2,7 @@ import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCo
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
+    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.3.0"
     id("com.github.node-gradle.node") version "7.0.1"
     application
 }
