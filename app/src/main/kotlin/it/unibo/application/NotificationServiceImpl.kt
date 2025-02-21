@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory
  */
 class NotificationServiceImpl(
     private val priceAlertRepository: PriceAlertRepository,
+
     private val eventDispatcher: EventDispatcher,
 ) : NotificationService {
     private val logger = LoggerFactory.getLogger(this::class.java)
