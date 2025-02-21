@@ -1,19 +1,13 @@
 import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCommit
 
 plugins {
+    alias(libs.plugins.git.sensitive.semantic.versioning)
     alias(libs.plugins.kotlin.jvm)
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
-    id("com.github.node-gradle.node") version "7.0.1"
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
+    id("org.jetbrains.dokka") version "2.0.0"
     application
-}
-
-node {
-    version.set("20.11.1")
-    download.set(true)
-    npmVersion.set("10.2.4")
-
-    nodeProjectDir.set(file("${project.projectDir}/src/web"))
-
 }
 
 buildscript {
@@ -21,28 +15,36 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Add the plugin to the classpath
         classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.15")
     }
 }
 
+gitSemVer {
+    maxVersionLength.set(20)
+    commitNameBasedUpdateStrategy(ConventionalCommit::semanticVersionUpdate)
+}
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
-    // Use the Kotlin JUnit 5 integration.
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-
-    // Use the JUnit 5 integration.
+    // Dependencies for testing
+    testImplementation(libs.kotlin.test.junit5)
     testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.konsist)
 
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Dependencies for runtime
+    testRuntimeOnly(libs.junit.platform.launcher)
 
-    // This dependency is used by the application.
-    implementation(libs.guava)
+    // Dependencies for the application
+    implementation(libs.bundles.ktor)
+    implementation(libs.logback.classic)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.dotenv.kotlin)
+    implementation(libs.kmongo.coroutine.serialization)
+    implementation(libs.auth0.jwt)
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -53,49 +55,75 @@ java {
 }
 
 application {
-    // Define the main class for the application.
-    mainClass = "org.example.AppKt"
+    mainClass = "it.unibo.MainKt"
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("config/detekt/detekt.yaml")
+}
+
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
+    // Disable configuration cache for this task
+    notCompatibleWithConfigurationCache("DokkaTask is not compatible with configuration cache")
 }
 
 tasks.named<Test>("test") {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
 
-gitSemVer {
-    maxVersionLength.set(20)
-    commitNameBasedUpdateStrategy(ConventionalCommit::semanticVersionUpdate)
-}
-
-
-tasks.register<com.github.gradle.node.npm.task.NpmTask>("npmBuild") {
-    workingDir.set(file("src/web"))
-    dependsOn("npmInstall")
-    args.set(listOf("run", "build"))
-}
-
 tasks.named("build") {
-    dependsOn("npmBuild")
-}
-
-tasks.register<com.github.gradle.node.npm.task.NpmTask>("npmDev") {
-    workingDir.set(file("src/web"))
-    args.set(listOf("run", "dev"))
-}
-
-tasks.register("devEnvironment") {
-    dependsOn("run", "npmDev")
-}
-
-tasks.named("run") {
-    // Ensure Kotlin runs in parallel with npm
-    mustRunAfter("npmDev")
+    dependsOn("ktlintFormat", "detekt", "test")
 }
 
 tasks.register("printVersion") {
+    val version = project.version
     doLast {
-        println("Project version: ${project.version}")
+        println("Project version: $version")
     }
 }
 
+tasks.jar {
+    archiveFileName.set("app.jar")
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
 
+    // Include all runtime dependencies into the JAR file
+    from(
+        configurations.runtimeClasspath
+            .get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) },
+    )
+
+    // Optionally, include your compiled classes (if not already included by default)
+    from(sourceSets.main.get().output)
+
+    // Ensure the JAR is built as a single fat JAR
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register<Exec>("dockerBuild") {
+    group = "docker"
+    description = "Builds the Docker image for the application."
+
+    workingDir = file("..")
+    commandLine("docker", "build", "-f", "Dockerfile", "-t", "notification:latest", ".")
+}
+
+tasks.register<Exec>("dockerRun") {
+    group = "docker"
+    description = "Runs the Docker container for the application."
+
+    dependsOn("dockerBuild")
+    // Adjust the port mapping as needed
+    commandLine("docker", "run", "-p", "8080:8080", "notification:latest")
+}
+
+tasks.register<Exec>("dockerClean") {
+    group = "docker"
+    description = "Removes dangling Docker images."
+
+    commandLine("docker", "image", "prune", "-f")
+}
