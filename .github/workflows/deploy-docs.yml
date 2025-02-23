@@ -1,43 +1,28 @@
-name: Generate Dokka Docs and Commit to Docs Folder
+name: import-gpg
 
 on:
   push:
-    branches:
-      - develop
+    branches: develop
 
 jobs:
-  generate-docs:
-    if: github.actor != 'github-actions[bot]'  # Prevent self-triggering
+  sign-commit:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
+      -
+        name: Checkout
         uses: actions/checkout@v4
+      -
+        name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Generate Dokka HTML Documentation
-        run: ./gradlew dokkaHtml
-
-      - name: Move Documentation to Docs Folder
+          gpg_private_key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.BOT_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+      -
+        name: Sign commit and push changes
         run: |
-          mkdir -p docs
-          rm -rf docs/*  # Clean previous docs
-          cp -r app/build/dokka/html/* docs/
-
-      - name: Commit and Push Documentation
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs
-          git diff --cached --quiet || git commit -m "Update Dokka documentation"
+          echo foo > bar.txt
+          git add .
+          git commit -S -m "This commit is signed!"
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
