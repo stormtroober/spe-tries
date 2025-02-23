@@ -5,7 +5,7 @@ on:
     branches: develop
 
 jobs:
-  sign-commit:
+  import-gpg:
     runs-on: ubuntu-latest
     steps:
       -
@@ -17,12 +17,6 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.BOT_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.BOT_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
       -
-        name: Sign commit and push changes
-        run: |
-          echo foo > bar.txt
-          git add .
-          git commit -S -m "This commit is signed!"
-          git push
+        name: List keys
+        run: gpg -K
