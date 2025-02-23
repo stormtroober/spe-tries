@@ -26,3 +26,5 @@ jobs:
           git add .
           git commit -S -m "This commit is signed!"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
