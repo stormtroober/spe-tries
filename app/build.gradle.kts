@@ -1,9 +1,13 @@
 import io.github.andreabrighi.gradle.gitsemver.conventionalcommit.ConventionalCommit
 
 plugins {
-    id("org.danilopianini.git-sensitive-semantic-versioning") version "0.1.0"
-    // Apply the Node.js plugin
-    id("com.github.node-gradle.node") version "7.1.0"
+    alias(libs.plugins.git.sensitive.semantic.versioning)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dokka)
+    application
 }
 
 buildscript {
@@ -11,8 +15,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Add the plugin to the classpath
-        classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.0")
+        classpath("io.github.andreabrighi:conventional-commit-strategy-for-git-sensitive-semantic-versioning-gradle-plugin:1.0.15")
     }
 }
 
@@ -21,39 +24,103 @@ gitSemVer {
     commitNameBasedUpdateStrategy(ConventionalCommit::semanticVersionUpdate)
 }
 
-node {
-    // Download a local Node.js distribution (instead of using a global one)
-    download.set(true)
-
-    // Pick whichever version of Node.js you prefer
-    version.set("18.17.1")
-
-    // If you have a specific version of npm to use, uncomment and set it:
-    // npmVersion.set("9.6.6")
-
-    // This is the directory where the plugin will look for package.json
-    nodeProjectDir.set(file(project.projectDir))
+repositories {
+    mavenCentral()
 }
 
-tasks.register<com.github.gradle.node.npm.task.NpmTask>("installDependencies") {
-    // The command is "npm install"
-    args.set(listOf("install"))
+dependencies {
+    // Dependencies for testing
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.junit.jupiter.engine)
+    testImplementation(libs.konsist)
+
+    // Dependencies for runtime
+    testRuntimeOnly(libs.junit.platform.launcher)
+
+    // Dependencies for the application
+    implementation(libs.bundles.ktor)
+    implementation(libs.logback.classic)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.dotenv.kotlin)
+    implementation(libs.dotenv.kotlin)
 }
 
-// If you want to run "npm run dev" via Gradle
-tasks.register<com.github.gradle.node.npm.task.NpmTask>("runDev") {
-    dependsOn("installDependencies")
-    args.set(listOf("run", "dev"))
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
-// If you also want to run "npm start" or anything else, add more tasks:
-tasks.register<com.github.gradle.node.npm.task.NpmTask>("startApp") {
-    dependsOn("installDependencies")
-    args.set(listOf("start"))
+application {
+    mainClass = "it.unibo.MainKt"
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("config/detekt/detekt.yaml")
 }
 
 tasks.register("printVersion") {
+    val version = project.version
     doLast {
-        println("Project version: ${project.version}")
+        println("Project version: $version")
     }
+}
+
+tasks.named("build") {
+    dependsOn("ktlintFormat", "detekt", "test")
+}
+
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
+    // Disable configuration cache for this task
+    notCompatibleWithConfigurationCache("DokkaTask is not compatible with configuration cache")
+}
+
+tasks.jar {
+    archiveFileName.set("app.jar")
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
+
+    // Include all runtime dependencies into the JAR file
+    from(
+        configurations.runtimeClasspath
+            .get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) },
+    )
+
+    from(sourceSets.main.get().output)
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register<Exec>("dockerBuild") {
+    group = "docker"
+    description = "Builds the Docker image for the application."
+
+    workingDir = file("..")
+    commandLine("docker", "build", "-f", "Dockerfile", "-t", "cryptomarket:latest", ".")
+}
+
+tasks.register<Exec>("dockerRun") {
+    group = "docker"
+    description = "Runs the Docker container for the application."
+
+    dependsOn("dockerBuild")
+    // Adjust the port mapping as needed
+    commandLine("docker", "run", "-p", "8080:8080", "cryptomarket:latest")
+}
+
+tasks.register<Exec>("dockerClean") {
+    group = "docker"
+    description = "Removes dangling Docker images."
+
+    commandLine("docker", "image", "prune", "-f")
 }

@@ -1,0 +1,60 @@
+name: Code Quality on PR
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+        - '**/renovate/**'
+
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+
+      - name: Run Detekt
+        id: detekt
+        run: ./gradlew detekt || true
+
+      - name: Check if Detekt report is empty
+        id: check_detekt_report
+        run: |
+          if [ -s app/build/reports/detekt/detekt.md ]; then
+            echo "Detekt report is not empty"
+            exit 0
+          else
+            echo "Detekt report is empty"
+            exit 1
+          fi
+
+      - name: Comment PR with Detekt report
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: app/build/reports/detekt/detekt.md

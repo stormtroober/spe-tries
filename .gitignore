@@ -1,3 +1,6 @@
+.gradle
+build
+
 # Node modules
 
 app/src/web/node_modules/
@@ -41,4 +44,6 @@ Thumbs.db
 
 # Ignore Gradle build output directory
 build
+
+.kotlin/
 
