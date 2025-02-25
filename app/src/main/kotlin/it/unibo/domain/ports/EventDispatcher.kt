@@ -7,7 +7,7 @@ import it.unibo.domain.EventPayload
  *
  * This interface provides methods for publishing event payloads
  * to the designated event handling system, and for closing the dispatcher
- * to release any underlying resources.
+ * to release any underlying tone.
  */
 interface EventDispatcher {
     /**
